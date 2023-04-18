@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit quiz question</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <div class="container">
+            <form role="form" class="form-horizontal" th:action="@{/quiz_question/edit/{id}(id=${quizQuestion.id})}" th:object="${quizQuestion}" method="post">
+                <div class="form-group"><h3>Edit quiz question</h3></div>
+                <div class="form-group">
+                    <label> Question:
+                        <textarea class="form-control" name="question" th:field="*{question}"></textarea>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="suite_id" id="suite_id">
+                        <option th:each="quizSuite:${quizSuiteList}" th:value="${quizSuite.id}" th:text="${quizSuite.name}" th:if="${quizQuestion.getQuizSuite().id} == ${quizSuite.id}" selected></option>
+                        <option th:each="quizSuite:${quizSuiteList}" th:value="${quizSuite.id}" th:text="${quizSuite.name}" th:if="${quizQuestion.getQuizSuite().id} != ${quizSuite.id}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                    <button type="button" id="quiz_suite_edit" class="btn btn-primary">Back to Suite edit</button>
+                </div>
+            </form>
+            <div th:replace="~{fragments/answer_list.html (questionId=${quizQuestion.id})}"></div>
+        </div>
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script>
+            $('.dropdown-toggle').dropdown();
+
+            var s = document.getElementById("suite_id");
+            var suiteId = s.options[s.selectedIndex].value;
+
+            $('#quiz_suite_edit').click(function(){
+                window.location.href='/quiz_suite/edit/' + suiteId;
+            });
+            var quill = new Quill('#editor', {
+                theme: 'snow'
+            });
+        </script>
+    </body>
+</html>

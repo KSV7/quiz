@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quiz theme list</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Quiz theme list</h1>
+            <ul id="groupList" class="nav navbar-nav">
+                <li><button type="button" id="quiz_theme_add" class="btn btn-primary">Add quiz theme</button></li>
+            </ul>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td><b>Theme name</b></td>
+                    <td><b>Action</b></td>
+                </tr>
+                </thead>
+                <tr th:each="quizSuiteTheme:${quizSuiteThemes}">
+                    <td><a th:href="@{/quiz_theme/edit/{id}(id=${quizSuiteTheme.id})}"><th:block th:text="${quizSuiteTheme.name}"></th:block></a></td>
+                    <td><button type="button" class="btn btn-danger" th:id="${quizSuiteTheme.id}" data-toggle="modal" data-target="#themeDeleteModal">
+                        Delete
+                    </button></td>
+                </tr>
+            </table>
+            <!-- Modal -->
+            <div class="modal fade" id="themeDeleteModal" tabindex="-1" role="dialog" aria-labelledby="themeDeleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="themeDeleteModalLabel">Delete theme</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="theme_delete">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('.dropdown-toggle').dropdown();
+
+            $('#quiz_theme_add').click(function(){
+                window.location.href='/quiz_theme/add';
+            });
+
+            document.addEventListener('click', (e) =>
+                {
+                    let themeId = e.target.id;
+                    if (themeId !== '') {
+                        $('#theme_delete').click(function () {
+                            window.location.href = '/quiz_theme/delete/' + themeId;
+                        });
+                    } else {
+                        console.log("An element without an id was clicked.");
+                    }
+                }
+            );
+        </script>
+    </body>
+</html>

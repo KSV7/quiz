@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit quiz theme</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              crossorigin="anonymous">
+        <link id="style_default" rel="stylesheet" href="/static/js/highlight/styles/default.min.css">
+        <script src="/static/js/highlight/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </head>
+    <body>
+        <div class="container">
+            <h2 th:text="${suiteName}"></h2>
+            <div class="row">
+                <div class="col-2">
+                    Time left: <span id="time"></span>
+                </div>
+                <div class="col-2">
+                    Question: <span th:text="${questionNum}"></span> / <span th:text="${questionTotal}"></span>
+                </div>
+                <div class="col-8">
+                    <div class="float-end">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                            Choose a code theme:&nbsp;
+                            <button type="button" id="style_def" class="btn btn-outline-primary">Default</button>
+                            <button type="button" id="style_dark" class="btn btn-outline-primary">Dark</button>
+                            <button type="button" id="style_light" class="btn btn-outline-primary">Light</button>
+                            <button type="button" id="style_atom_one_dark" class="btn btn-outline-primary">Atom one dark</button>
+                            <button type="button" id="style_docco" class="btn btn-outline-primary">Docco</button>
+                            <button type="button" id="style_idea" class="btn btn-outline-primary">Idea</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="post"  class="mt-2">
+                <pre><code th:text="${quizPlayerQuestion.question}"></code></pre>
+                <input type="hidden" name="user_id" th:value="${userId}">
+                <input type="hidden" name="suite_name" th:value="${suiteName}">
+                <input type="hidden" name="question_id" th:value="${quizPlayerQuestion.id}">
+                <input type="hidden" name="checkAns" th:value="${checkAns}">
+                <th:block th:each="playerAnswer: ${answers}" th:if="${checkAns} == 0">
+                    <div class="input-group my-3">
+                        <div class="input-group-text">
+                            <input type="radio" th:id="'answer'+${playerAnswer.id}" name="answer" class="form-check-input mt-0" th:value="${playerAnswer.id}">
+                            <label class="custom-control-label" th:for="'answer'+${playerAnswer.id}" th:text="${playerAnswer.answer}"></label>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:each="playerAnswer: ${answers}" th:if="${checkAns} == 1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="answer" th:value="${playerAnswer.id}" th:id="'answer'+${playerAnswer.id}">
+                        <label class="form-check-label" th:for="'answer'+${playerAnswer.id}" th:text="${playerAnswer.answer}"></label>
+                    </div>
+                </th:block>
+                <button class="btn btn-primary" type="submit" id="sendAnswer" th:if="${questionNum} != ${questionTotal}" disabled>Next</button>
+                <button class="btn btn-primary" type="submit" id="sendAnswer" th:if="${questionNum} == ${questionTotal}" disabled>Finish</button>
+            </form>
+        </div>
+        <script>
+            $("input[type=radio]").on("change", function() {
+                $("#sendAnswer").prop("disabled", false);
+            });
+
+            const $checkboxes = $(".form-check input:checkbox"),
+                $btn = $("#sendAnswer");
+
+            $checkboxes.each(function(idx, itm){
+                $(itm).on("change", function() {
+                    const isCheckedAnything = $checkboxes.filter(":checked").length > 0;
+                    $btn.prop('disabled', !isCheckedAnything);
+                });
+            });
+        </script>
+        <script src="/static/js/choose_style_highlight.js"></script>
+        <script th:inline="javascript">
+            let newDate,
+                intervalId;
+            newDate = [[${newTime}]];
+            timer();
+            if (!intervalId) intervalId = setInterval(timer, 1000);
+
+            function timer() {
+                let now = Date.now(),
+                    rest = newDate >= now ? Math.round((newDate - now) / 1000) * 1000 : 0,
+                    s = "";
+                if (!rest) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    const quizSessionId = [[${quizSessionId}]];
+                    window.location.href='/timeisover/' + quizSessionId;
+                } else {
+                    var rest2 = rest % 3600000;
+                    let hh = (rest - rest2) / 3600000;
+                    rest = rest2;
+
+                    rest2 = rest % 60000;
+                    let mm = (rest - rest2) / 60000;
+                    rest = rest2;
+
+                    rest2 = rest % 1000;
+                    let ss = (rest - rest2) / 1000;
+                    let ms = rest2;
+
+                    s = (hh < 10 ? "0" : "") + hh + ":" +
+                        (mm < 10 ? "0" : "") + mm + ":" +
+                        (ss < 10 ? "0" : "") + ss;
+                }
+                document.querySelector("#time").textContent = s;
+            }
+        </script>
+    </body>
+</html>

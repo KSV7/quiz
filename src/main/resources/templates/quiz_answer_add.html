@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add answer</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <form role="form" class="form-horizontal" th:action="@{/quiz_answer/save}" th:object="${quizAnswer}" method="post">
+                <div class="form-group"><h3>Add answer</h3></div>
+                <div class="form-group">
+                    <select class="form-control" name="question_id" id="question_id">
+                        <option th:each="quizQuestion:${quizQuestionList}" th:value="${quizQuestion.id}" th:text="${quizQuestion.question}" th:if="${quizQuestion.id} == ${quizQuestionById.id}" selected></option>
+                        <option th:each="quizQuestion:${quizQuestionList}" th:value="${quizQuestion.id}" th:text="${quizQuestion.question}" th:if="${quizQuestion.id} != ${quizQuestionById.id}"></option>
+                    </select>
+                </div>
+                <div class="form-group"><input type="text" class="form-control" name="answer" placeholder="Answer"></div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Add">
+                    <button type="button" id="quiz_question_edit" class="btn btn-primary">Back to Question edit</button>
+                </div>
+            </form>
+        </div>
+        <script>
+            $('.dropdown-toggle').dropdown();
+
+            var s = document.getElementById("question_id");
+            var questionId = s.options[s.selectedIndex].value;
+
+            $('#quiz_question_edit').click(function(){
+                window.location.href='/quiz_question/edit/' + questionId;
+            });
+        </script>
+    </body>
+</html>

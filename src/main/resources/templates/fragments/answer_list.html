@@ -1,0 +1,68 @@
+<h1>Quiz answer list</h1>
+<ul id="groupList" class="nav navbar-nav">
+    <li>
+        <button type="button" id="answer_add" class="btn btn-primary">Add answer</button>
+    </li>
+</ul>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <td><b>Answer</b></td>
+        <td><b></b></td>
+    </tr>
+    </thead>
+    <tr th:each="quizAnswer: ${quizAnswerList}">
+        <td><a th:href="@{/quiz_answer/edit/{id}(id=${quizAnswer.id})}">
+            <th:block th:text="${quizAnswer.answer}"></th:block>
+        </a></td>
+        <!-- Button trigger modal -->
+        <td>
+            <button type="button" class="btn btn-danger" th:id="${quizAnswer.id}" data-toggle="modal"
+                    data-target="#answerDeleteModal">
+                Delete
+            </button>
+        </td>
+    </tr>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="answerDeleteModal" tabindex="-1" role="dialog" aria-labelledby="answerDeleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="answerDeleteModalLabel">Delete answer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="answer_delete">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.dropdown-toggle').dropdown();
+
+    var questionId = [[${questionId}]];
+
+    $('#answer_add').click(function () {
+        window.location.href = '/quiz_answer/add?questionId=' + questionId;
+    });
+
+    document.addEventListener('click', (e) => {
+            let answerId = e.target.id;
+            if (answerId !== '') {
+                $('#answer_delete').click(function () {
+                    window.location.href = '/quiz_answer/delete/' + answerId;
+                });
+            } else {
+                console.log("An element without an id was clicked.");
+            }
+        }
+    );
+</script>

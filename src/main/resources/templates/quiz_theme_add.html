@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add quiz theme</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <form role="form" class="form-horizontal" th:action="@{/quiz_theme/save}" th:object="${quizSuiteTheme}" method="post">
+                <div class="form-group"><h3>New quiz theme</h3></div>
+                <div class="form-group"><input type="text" class="form-control" name="name" placeholder="Name"></div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Add">
+                    <button type="button" id="quiz_theme_list" class="btn btn-primary">Back to Theme list</button>
+                    <button type="button" id="quiz_suite_list" class="btn btn-primary">Back to Suite list</button>
+                </div>
+            </form>
+        </div>
+        <script>
+            $('.dropdown-toggle').dropdown();
+
+            $('#quiz_theme_list').click(function(){
+                window.location.href='/quiz_theme/list';
+            });
+            $('#quiz_suite_list').click(function(){
+                window.location.href='/quiz_suite/list';
+            });
+        </script>
+    </body>
+</html>

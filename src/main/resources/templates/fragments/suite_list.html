@@ -1,0 +1,70 @@
+<h1>Quiz suite list</h1>
+<ul id="groupList" class="nav navbar-nav">
+    <li>
+        <button type="button" id="suite_add" class="btn btn-primary">Add suite</button>
+    </li>
+</ul>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <td><b>Suite name</b></td>
+        <td><b>Description</b></td>
+        <td><b></b></td>
+    </tr>
+    </thead>
+
+    <tr th:each="quizSuite: ${quizSuiteList}">
+        <td><a th:href="@{/quiz_suite/edit/{id}(id=${quizSuite.id})}">
+            <th:block th:text="${quizSuite.name}"></th:block>
+        </a></td>
+        <td th:block th:text="${quizSuite.description}"></td>
+        <td>
+            <button type="button" class="btn btn-danger" th:id="${quizSuite.id}" data-toggle="modal"
+                    data-target="#suiteDeleteModal">
+                Delete
+            </button>
+        </td>
+    </tr>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="suiteDeleteModal" tabindex="-1" role="dialog" aria-labelledby="suiteDeleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="suiteDeleteModalLabel">Delete suite</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="suite_delete">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.dropdown-toggle').dropdown();
+
+    var themeId = [[${themeId}]];
+
+    $('#suite_add').click(function () {
+        window.location.href = '/quiz_suite/add?themeId=' + themeId;
+    });
+
+    document.addEventListener('click', (e) => {
+            let suiteId = e.target.id;
+            if (suiteId !== '') {
+                $('#suite_delete').click(function () {
+                    window.location.href = '/quiz_suite/delete/' + suiteId;
+                });
+            } else {
+                console.log("An element without an id was clicked.");
+            }
+        }
+    );
+</script>
